@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <title></title>
 </head>
+<body>
+{% extends "base.html" %}
+{% block content %}
     <p>Click <a href="{% url 'login_pattern' %}">here</a> to log out.</p>
     <h3>Admin Panel</h3>
     <h4>User Registration Form</h4>
@@ -35,5 +38,6 @@
     <form action="/curruser/" form method="POST">{% csrf_token %}
         <input type="submit" value="View current users">
     </form>
+{% endblock %}
 </body>
 </html>

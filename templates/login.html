@@ -5,12 +5,18 @@
     <title>Login Page</title>
 </head>
 <body>
+{% extends "base.html" %}
+ <!--extension, this and the blocks mean
+whatever is in base.html bring it to login.html
+think of the block tags in subclasses as portals to superclass-->
+
+
     <h3>{{title}}</h3>
 
     {% if form.errors %}
         <p class="error">Invalid username/password</p>
     {% endif %}
-
+{% block content %}
     <form method="POST" action="/auth/">{% csrf_token %}
        <!-- {{form.as_p}}-->
 
@@ -23,6 +29,6 @@
         <input type = 'submit' value = 'Log In'/>
 
     </form>
-
+{% endblock %}
 </body>
 </html>

@@ -7,33 +7,9 @@ from .forms import LoginForm
 from django.template import RequestContext
 from django.contrib.auth.forms import UserCreationForm
 from .forms import RegistrationForm
+from .models import Signin
 
 # Create your views here.
-'''
-def login(request): #passes in a request using GET request
-    title = 'Welcome'
-    form = LoginForm(request.POST) #parantheses creates an instance of that form
-
-    context = {#this is a dictionary
-        "title": title,
-        "form": form,
-    }
-    context.update(csrf(request))
-
-    if form.is_valid():
-        form_instance = form.save(commit=False)
-        form_instance.save()
-        print(form_instance.email)
-        print(form_instance.timestamp)
-        context = {
-            "title": "Thank You"
-        }
-
-    if request.method == "POST":
-        print(request.POST)
-    return render(request, "login.html", context) #server responds to GET request, should replace {} with context
-
-'''
 def login(request):
     title = "Please log in"
     c = {
@@ -76,6 +52,7 @@ def loggedin(request):#this displays admin form and handles saving the form i.e.
             return render_to_response('admin.html',c)
         else:
             title_admin = "Form entered is not valid!"
+
     args = {
         "title_admin": title_admin,
     }
@@ -94,6 +71,11 @@ def logout(request):
     return render_to_response('login.html',c)
 
 def curruser(request):
-    c={}
-    c.update(csrf(request))
-    return render_to_response('current_users.html',c)
+    if request.method=='POST':
+        print("following are DB info")
+        print(request.POST)
+    signin = Signin.objects.all()
+    c={
+        "signin":signin
+    }
+    return render_to_response('current_users.html',c,RequestContext(request))
