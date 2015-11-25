@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+    <p>Click <a href="{% url 'login_pattern' %}">here</a> to log out.</p>
+    <h3>Admin Panel</h3>
+    <h4>User Registration Form</h4>
+    <h5>{{title_admin}}</h5>
+
+
+
+    <form method="POST" action="/loggedin/">{% csrf_token %}
+<!--
+        <label for="user_id">User ID:</label>
+        <input type="number" name="user_id" value="" id="user_id">
+        <br/>
+        <label for="role">Role:</label>
+        <input type="text" name="role" value="" id="role">
+        <br/>
+        <label for="username">User name:</label>
+        <input type="text" name="username" value="" id="username">
+        <br/>
+        <label for="password">Password:</label>
+        <input type="password" name="password" value="" id="password">
+        <br/>
+        <label for="password">Confirm password:</label>
+        <input type="password" name="password" value="" id="password2">
+        <br/>-->
+        {{reg_form}}
+
+        <input type = 'submit' value = 'Submit new user'/>
+    </form>
+    <form action="/curruser/" form method="POST">{% csrf_token %}
+        <input type="submit" value="View current users">
+    </form>
+</body>
+</html>
