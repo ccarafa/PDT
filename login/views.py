@@ -21,14 +21,24 @@ def login(request):
 def auth_view(request):
     #if request.method == "POST":
         #print(request.POST)#for debugging
-    username = request.POST.get('username','defaultusr')#second param is default
-    password = request.POST.get('password','defaultpw')
+    username = request.POST.get('username','')#second param is default
+    password = request.POST.get('password','')
     user = auth.authenticate(username=username, password=password)
     #if match is found, a user object is returned. if no match, None is ret.
 
     if user is not None:
         auth.login(request, user)
-        return HttpResponseRedirect('/loggedin')
+        for instance in Signin.objects.all():
+            if(instance.username==username):
+                if(instance.role=='Developer'):
+                    print("Developer Status")
+                    return HttpResponseRedirect('/developer')
+                elif(instance.role=='Manager'):
+                    print("Manager Status")
+                    return HttpResponseRedirect('/manager')
+                else:
+                    print("Admin Status");
+            return HttpResponseRedirect('/loggedin')
     else:
         title = "Your login details are invalid, please try again."
         c = {
@@ -79,3 +89,9 @@ def curruser(request):
         "signin":signin
     }
     return render_to_response('current_users.html',c,RequestContext(request))
+
+def manager(request):
+    return render_to_response('manager.html',RequestContext(request))
+
+def developer(request):
+    return render_to_response('developer.html',RequestContext(request))

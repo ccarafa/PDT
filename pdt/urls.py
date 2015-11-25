@@ -20,6 +20,8 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', 'login.views.login', name='login_pattern'),
     url(r'^loggedin/$', 'login.views.loggedin'),
+    url(r'^manager/$', 'login.views.manager'),
+    url(r'^developer/$', 'login.views.developer'),
     url(r'^auth/$', 'login.views.auth_view'),
     url(r'^curruser/$','login.views.curruser', name='curruser_pattern'),
 ]
