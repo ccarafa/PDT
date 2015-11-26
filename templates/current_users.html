@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Current Users</title>
+</head>
+<body>
+    <h2>current users</h2>
+    <table border="1" style="width:50%">
+      <tr>
+        <td><b>User_ID</b></td>
+        <td><b>Role</b></td>
+        <td><b>Username</b></td>
+      </tr>
+        {% for instance in signin %}
+        {% if instance.role %}
+        <tr>
+            <td>{{instance.user_id}}</td>
+            <td>{{instance.role}}</td>
+            <td>{{instance.username}}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </table>
+
+</body>
+</html>

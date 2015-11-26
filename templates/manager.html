@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manager's Page</title>
+</head>
+<body>
+<h1>Project dashboard</h1>
+
+<form method="POST" action="/managerprojects/">{% csrf_token %}
+	<input type="submit" name="submit" value ="Add a Project">
+</form> 
+
+<br>
+<br>
+
+<table>
+        {% for instance in projects %}
+        {% ifequal instance.manager name %}
+        <tr>
+            <td>
+            	<form method="POST" action="/projectpage/">{% csrf_token %}
+            		<input type="submit" value="{{instance.project_name}}" name="{{instance.project_name}}">
+            	</form>
+            </td>
+        </tr>
+        {% endifequal %}
+        {% endfor %}
+    </table>
+
+</body>
+</html>
