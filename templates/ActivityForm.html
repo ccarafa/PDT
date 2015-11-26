@@ -1,0 +1,9 @@
+<center>
+<h1>{{project_name}} - {{phase_name}} - {{iteration_name}} - {{activity_type}}</h1>
+
+<form method="POST" action='.'>{% csrf_token %}
+	Source Lines of Code: <input type="text" name="sloc"><br><br>
+	Defects Injected/Removed: <input type="text" name="defects"><br><br>
+	<input type="submit" value="submit" name="submit_metrics"><br><br>
+</form>
+</center>

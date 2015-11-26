@@ -18,4 +18,7 @@ from django.contrib import admin
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^developer/projects/[0-9]+/phases/[0-9]+/iterations/[0-9]+/activities/$', "activity.views.activityDashboard", name='activityDashboard'),
+    url(r'^developer/projects/[0-9]+/phases/[0-9]+/iterations/[0-9]+/activities/activity/$', "activity.views.activity", name='activity'),
+
 ]
