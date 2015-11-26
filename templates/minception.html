@@ -1,0 +1,14 @@
+<h1>{{projectname}}: Inception Phase</h1>
+
+<form action="/minceptionopen/" form method="POST">{% csrf_token %}
+        <input name ="iteration_1"type="submit" value="Open">
+   </form>
+   <form action="/minceptionclose/" form method="POST">{% csrf_token %}
+        <input name ="iteration_1"type="submit" value="Close">
+   </form>
+   <form action="/minception/" form method="POST">{% csrf_token %}
+        <input name ="iteration_1"type="submit" value="View Metrics">
+   </form>
+   <form action="/minceptioniterations/" form method="POST">{% csrf_token %}
+        <input name ="iteration_1"type="submit" value="Iterations">
+   </form>

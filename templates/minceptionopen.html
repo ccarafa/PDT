@@ -1,0 +1,12 @@
+<h1>{{projectname}}: Inception phase: Open</h1>
+
+	<form method="POST" action = "/minceptionopen/"> {% csrf_token%}
+	    <label for="est_sloc">Estimated Source Lines of Code: </label>
+        <input type="number" name="est_sloc" value="" id="est_sloc">
+        <br/>
+
+	<br/>
+   <form action="/minceptionopen/" form method="POST">{% csrf_token %}
+        <input name ="submit_button"type="submit" value="Submit">
+   </form>
+    </form>

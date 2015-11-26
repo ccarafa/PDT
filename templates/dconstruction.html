@@ -1,0 +1,13 @@
+<form action="/dinceptionopen/" form method="POST">{% csrf_token %}
+        <input name ="iteration_1"type="submit" value="Open">
+   </form>
+   <form action="/dinception/" form method="POST">{% csrf_token %}
+        <input name ="iteration_1"type="submit" value="Close">
+   </form>
+   <form action="/dinception/" form method="POST">{% csrf_token %}
+        <input name ="iteration_1"type="submit" value="View Metrics">
+   </form>
+   <!--change minception above to actual related functions-->
+   <form action="/dconstructioniterations/" form method="POST">{% csrf_token %}
+        <input name ="iterations"type="submit" value="Iterations">
+   </form>

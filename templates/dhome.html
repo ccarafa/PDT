@@ -1,0 +1,17 @@
+<h1>Developer Phases: {{projectname}}</h1>
+<form action="/minception/" form method="POST">{% csrf_token %}
+        <input name ="minception"type="submit" value="Inception Phase">
+   </form>
+
+<form action="/melaboration/" form method="POST">{% csrf_token %}
+        <input name ="melaboration"type="submit" value="Elaboration Phase">
+   </form>
+
+<form action="/mconstruction/" form method="POST">{% csrf_token %}
+        <input name ="mconstruction"type="submit" value="Construction Phase">
+   </form>
+
+<form action="/mtransition/" form method="POST">{% csrf_token %}
+        <input name ="mtransition"type="submit" value="Transition Phase">
+   </form>
+  
