@@ -34,10 +34,7 @@ def activityDashboard(request):
 		request.session['activity_type'] = activity_type
 		url = reverse('activity')
 		return HttpResponseRedirect(url)
-		# return render(request, "Activity.html", context)
-	# for instance in Activity.objects.all():
-	# activities = Activity.objects.all()
-	# activity_id = len(activities)+1
+
 	context = {
 		"project_name": project_name,
 		"phase_name": phase_name,
@@ -53,6 +50,7 @@ def activity(request):
 	iteration_name = request.session['iteration_name']
 	username = request.session['username']
 	activity_type = request.session['activity_type']
+	# print (activity_type)
 	activity_status = 'N/A'
 	sloc = 'N/A'
 	defects = 'N/A'
@@ -70,6 +68,16 @@ def activity(request):
 		"error": error,
 		"duration": duration,
 	}
+	try:
+		instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type=activity_type)
+		activity_status = str(instance.is_open)
+		sloc = str(instance.sloc)
+		defects = str(instance.defects)
+		duration = str(instance.duration)
+
+	except Activity.DoesNotExist:
+		error = 'No error'
+		
 	if ('start' in request.POST):
 		exist = False
 		for instance in Activity.objects.all():
@@ -97,7 +105,7 @@ def activity(request):
 						instance.is_open = False
 						instance.save()
 		if (exist == False):
-			instance = Activity.objects.create(start_time=str(time()), is_open=True, project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username)
+			instance = Activity.objects.create(start_time=str(time()), is_open=True, activity_type=activity_type, project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username)
 			activity_status = str(True)
 			sloc = str(instance.sloc)
 			defects = str(instance.defects)
