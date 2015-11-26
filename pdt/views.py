@@ -35,8 +35,21 @@ def minceptioniterations(request):
 	return render(request, "minceptioniterations.html", context)
 
 def minceptionopen(request):
-	title = "Please fill in these estimates to open the inception phase"
-	'''
+	for i in request.POST:
+		print(i)
+	'''ManagerPhases= ManagerPhase.objects.all()
+	if ('submit_button' in request.method):
+		est_sloc = request.POST.get('est_sloc')
+
+		for instance in ManagerPhases:
+			if instance.project_name == request.session['projectname'] and instance.phase_name == 'Inception Phase':
+				instance.sloc = est_sloc
+				instance.is_open = True
+				instance.save()
+			else:
+				instance2 = ManagerPhase.objects.create(phase_name='Inception Phase',project_name=request.session['projectname'],is_open=True,est_sloc=est_sloc)
+				instance2.save()'''
+
 	form = PhaseOpenForm(request.POST)#post in arg
 	if form.is_valid():
 		form.save()
@@ -47,26 +60,14 @@ def minceptionopen(request):
 		c.update(csrf(request))
 		return render_to_response('minceptionopen.html',c)
 	else:
-		title_admin = "One or more estimate is not valid!"
-		args = {
-		"title": title,
-		"projectname": request.session['projectname']
-		}
-		args.update(csrf(request))
-		return render_to_response('minceptionopen.html',args)'''
-	if request.method=='POST':
-		#phase = Phase.objects.get(title=offset)
-		est_sloc = request.POST.get('est_sloc')
-		hours = request.POST.get('hours')
-		defects = request.POST.get('defects')
-		phase_obj = ManagerPhase(phase_name='Inception Phase', project_name=request.session['projectname'], est_sloc=est_sloc, defects=defects, hours=hours, is_open=True)
-		phase_obj.save()
+		title = "Please fill in these estimates to open the inception phase"
+	title = "Please fill in these estimates to open the inception phase"
 	args = {
 		"title": title,
 		"projectname": request.session['projectname']
 	}
 	args.update(csrf(request))
-	return render_to_response('minceptionopen.html')
+	return render_to_response('minceptionopen.html', args)
 
 def minceptionclose(request):
 	title = "Please fill in these info to close the inception phase"
@@ -98,7 +99,7 @@ def minceptionclose(request):
 	}
 	args.update(csrf(request))
 	return render_to_response('minceptionclose.html',args)
-'''print(request.POST)
+	print(request.POST)
 		form = PhaseOpenForm(request.POST)#post in arg
 		if form.is_valid():
 			form.save()
@@ -118,7 +119,7 @@ def minceptionclose(request):
 	}
 	args.update(csrf(request))
 	args['PhaseOpenForm']=PhaseOpenForm()#no post in arg, bog standard
-	return render_to_response('minceptionopen.html',args)'''
+	return render_to_response('minceptionopen.html',args)
 	
 def melaboration(request):
 	context = {
