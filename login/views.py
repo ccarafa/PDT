@@ -336,39 +336,54 @@ def activity(request):
 		error = 'No error'
 
 	if ('start' in request.POST):
-		exist = False
-		for instance in Activity.objects.all():
-			if (instance.project_name==project_name and instance.phase_name==phase_name and instance.iteration_name==iteration_name and username==username):
-				if (instance.activity_type==activity_type):
-					exist = True
-					if (instance.is_open == False):
-						instance.start_time = str(time())
-						instance.is_open = True
-						activity_status = str(True)
-						sloc = str(instance.sloc)
-						defects = str(instance.defects)
-						duration = str(instance.duration)
-						instance.save()
-						error = 'Start: Timer started'
+		canstart = True
+		cproject = Project.objects.get(project_name = project_name)
+		cphase = Phase.objects.get(phase_name = phase_name)
+		citeration = Iteration.objects.get(iteration_name = iteration_name)
+		if (cproject.is_open == False):
+			error = 'Project is closed'
+			canstart = False
+		if (cphase.is_open == False):
+			error = 'Phase is closed'
+			canstart = False
+		if (citeration.is_open == False):
+			error = 'Iteration is closed'
+			canstart = False
+			
+		if (canstart):
+			exist = False
+			for instance in Activity.objects.all():
+				if (instance.project_name==project_name and instance.phase_name==phase_name and instance.iteration_name==iteration_name and username==username):
+					if (instance.activity_type==activity_type):
+						exist = True
+						if (instance.is_open == False):
+							instance.start_time = str(time())
+							instance.is_open = True
+							activity_status = str(True)
+							sloc = str(instance.sloc)
+							defects = str(instance.defects)
+							duration = str(instance.duration)
+							instance.save()
+							error = 'Start: Timer started'
+						else:
+							error = 'Start: Timer is already running'
 					else:
-						error = 'Start: Timer is already running'
-				else:
-					if (instance.is_open==True):
-						pause = time()
-						start = float(instance.start_time)
-						instance.pause_time = str(pause)
-						total = float(instance.duration) + (pause - start)
-						instance.duration = str(total)
-						instance.is_open = False
-						instance.save()
-		if (exist == False):
-			instance = Activity.objects.create(start_time=str(time()), is_open=True, activity_type=activity_type, project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username)
-			activity_status = str(True)
-			sloc = str(instance.sloc)
-			defects = str(instance.defects)
-			duration = str(instance.duration)
-			instance.save()
-			error = 'Start: Timer started'
+						if (instance.is_open==True):
+							pause = time()
+							start = float(instance.start_time)
+							instance.pause_time = str(pause)
+							total = float(instance.duration) + (pause - start)
+							instance.duration = str(total)
+							instance.is_open = False
+							instance.save()
+			if (exist == False):
+				instance = Activity.objects.create(start_time=str(time()), is_open=True, activity_type=activity_type, project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username)
+				activity_status = str(True)
+				sloc = str(instance.sloc)
+				defects = str(instance.defects)
+				duration = str(instance.duration)
+				instance.save()
+				error = 'Start: Timer started'
 
 	elif ('pause' in request.POST):
 		# error = 'Not found'
