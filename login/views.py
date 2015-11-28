@@ -339,8 +339,8 @@ def activity(request):
 	if ('start' in request.POST):
 		canstart = True
 		cproject = Project.objects.get(project_name = project_name)
-		cphase = Phase.objects.get(phase_name = phase_name)
-		citeration = Iteration.objects.get(iteration_name = iteration_name)
+		cphase = Phase.objects.get(phase_name = phase_name, project_name = project_name)
+		citeration = Iteration.objects.get(iteration_name = iteration_name, phase_name = phase_name, project_name = project_name)
 		if (cproject.is_open == False):
 			error = 'Project is closed'
 			canstart = False
