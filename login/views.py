@@ -272,11 +272,11 @@ def activityDashboard(request):
 		request.session['iteration_name']="Iteration 2"
 	elif request.POST.get("Iteration 3"):
 		request.session['iteration_name']="Iteration 3"
+	print (request.session['project_name'])
 	project_name = request.session['project_name']
 	phase_name = request.session['phase_name']
 	iteration_name = request.session['iteration_name']
 	username = request.session['username']
-	shit = 'Nothing'
 	if ('development' in request.POST):
 		activity_type = 'Development'
 		request.session['activity_type'] = activity_type
@@ -298,7 +298,6 @@ def activityDashboard(request):
 		"phase_name": phase_name,
 		"iteration_name": iteration_name,
 		"username": username,
-		"shit": shit,
 	}
 	return render(request, "ActivityDashboard.html", context)
 
@@ -313,6 +312,17 @@ def activity(request):
 	defects = 'N/A'
 	duration = 'N/A'
 	error = 'No error'
+		
+	try:
+		instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type=activity_type)
+		activity_status = str(instance.is_open)
+		sloc = str(instance.sloc)
+		defects = str(instance.defects)
+		duration = str(instance.duration)
+
+	except Activity.DoesNotExist:
+		error = 'No error'
+
 	context = {
 		"project_name": project_name,
 		"phase_name": phase_name,
@@ -325,16 +335,7 @@ def activity(request):
 		"error": error,
 		"duration": duration,
 	}
-	try:
-		instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type=activity_type)
-		activity_status = str(instance.is_open)
-		sloc = str(instance.sloc)
-		defects = str(instance.defects)
-		duration = str(instance.duration)
-
-	except Activity.DoesNotExist:
-		error = 'No error'
-
+	
 	if ('start' in request.POST):
 		canstart = True
 		cproject = Project.objects.get(project_name = project_name)
@@ -349,7 +350,7 @@ def activity(request):
 		if (citeration.is_open == False):
 			error = 'Iteration is closed'
 			canstart = False
-			
+
 		if (canstart):
 			exist = False
 			for instance in Activity.objects.all():
