@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+<h1>Metrics View</h1>
+<table border="1" style="width:50%">
+      <tr>
+        <td><b>Avg SLOC</b></td>
+        <td><b>SLOC</b></td>
+        <td><b>Effort/Person-Hour</b>
+        <td><b>SLOC/Person-Hour</b>
+        <td><b>Injections/Effort</b>
+        <td><b>Defect Removals/Effort</b></td>
+        <td><b>Defect Injections/SLOC</b></td>
+        <td><b>Defects Yield</b></td>
+        <td><b>Defect Removals</b></td>
+        <td><b>Defect Injections</b></td>
+      </tr>
+        <tr>
+            <td>{{average_sloc}}</td>
+            <td>{{sloc}}</td>
+            <td>{{effortperesthours}}</td>
+            <td>{{slocpereffort}}</td>
+            <td>{{injectionspereffort}}</td>
+            <td>{{removalsperefort}}</td>
+            <td>{{injectionsperksloc}}</td>
+            <td>{{defectsyield}}</td>
+            <td>{{removals}}</td>
+            <td>{{injections}}</td>
+        </tr>
+    </table>
+    <form method="POST" action="/projectpage/projectbuttons/phase/iteration/">{% csrf_token %}
+        <input type="submit" name="back" value="Back">
+    </form>
+
+</body>
+</html>

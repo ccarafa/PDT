@@ -1,0 +1,9 @@
+<form method="POST" action=".">{% csrf_token %}
+	Estimate Source lines of code: <input type="text" name="estimate_sloc"><br><br>
+	Estimate Developer wokring hours: <input type="text" name="hours">
+	<input type="submit" name="submit">
+</form>
+{{state}}
+<form method="POST" action="/projectpage/">{% csrf_token %}
+	<input type="submit" name="back" value="Back">
+</form>

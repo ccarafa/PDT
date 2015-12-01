@@ -1,0 +1,8 @@
+<form method="POST" action=".">{% csrf_token %}
+	Real Source lines of code: <input type="text" name="sloc">
+	<input type="submit" name="closesubmit">
+</form>
+{{state}}
+<form method="POST" action="/projectpage/">{% csrf_token %}
+	<input type="submit" name="back" value="Back">
+</form>

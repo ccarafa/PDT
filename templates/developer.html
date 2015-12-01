@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Developer's Page</title>
+</head>
+<body>
+    <h2>Projects</h2>
+    <table>
+        {% for instance in projects %}
+        {% ifequal instance.developer_name name %}
+        <tr>
+            <td>
+                <form method="POST" action="/developerphases/">{% csrf_token %}
+                    <input type="submit" value="{{instance.project_name}}" name="{{instance.project_name}}">
+                </form>
+            </td>
+        </tr>
+        {% endifequal %}
+        {% endfor %}
+    </table>
+
+</body> 
+</html>
