@@ -10,7 +10,7 @@ from django.template import RequestContext
 from django.contrib.auth.forms import UserCreationForm
 from .forms import RegistrationForm
 from .models import Signin
-from projects.models import Project, ProjectsDeveloper, Phase, Iteration, Activity
+from projects.models import Project, ProjectsDeveloper, Phase, Iteration, Activity, Defect
 
 # Create your views here.
 
@@ -703,11 +703,6 @@ def developmentActivity(request):
 
 	elif ('stop' in request.POST):
 		try:
-			print (project_name)
-			print (phase_name)
-			print (iteration_name)
-			print (username)
-			print (activity_type)
 			instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type=activity_type)
 			return render(request, "developmentForm.html", context)
 		except Activity.DoesNotExist:
@@ -749,7 +744,141 @@ def developmentActivity(request):
 	return render(request, "developmentActivity.html", context)
 
 def defectsActivity(request):
-	b = True
+	project_name = request.session['project_name']
+	phase_name = request.session['phase_name']
+	iteration_name = request.session['iteration_name']
+	username = request.session['username']
+	activity_type = "Defect Removal"
+	activity_status = 'N/A'
+	sloc = 'N/A'
+	duration = 'N/A'
+	error = 'No error'
+		
+	try:
+		instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type=activity_type)
+		activity_status = str(instance.is_open)
+		sloc = str(instance.sloc)
+		duration = str(instance.duration)
+
+	except Activity.DoesNotExist:
+		error = 'No error'
+
+	context = {
+		"project_name": project_name,
+		"phase_name": phase_name,
+		"iteration_name": iteration_name,
+		"username": username,
+		"activity_type": activity_type,
+		"activity_status": activity_status,
+		"error": error,
+		"duration": duration,
+	}
+
+	if ('start' in request.POST):
+		canstart = True
+		cproject = Project.objects.get(project_name = project_name)
+		cphase = Phase.objects.get(phase_name = phase_name, project_name = project_name)
+		citeration = Iteration.objects.get(iteration_name = iteration_name, phase_name = phase_name, project_name = project_name)
+		if (cproject.is_open == False):
+			error = 'Project is closed'
+			canstart = False
+		if (cphase.is_open == False):
+			error = 'Phase is closed'
+			canstart = False
+		if (citeration.is_open == False):
+			error = 'Iteration is closed'
+			canstart = False
+		
+		if (canstart):
+			exist = False
+			for instance in Activity.objects.all():
+				if (instance.project_name==project_name and instance.phase_name==phase_name and instance.iteration_name==iteration_name and username==username):
+					if (instance.activity_type==activity_type):
+						exist = True
+						print (str(instance.is_open))
+						if (instance.is_open == False):
+							instance.start_time = str(time())
+							instance.is_open = True
+							activity_status = str(True)
+							duration = str(instance.duration)
+							instance.save()
+							error = 'Start: Timer started'
+						else:
+							error = 'Start: Timer is already running'
+					else:
+						if (instance.is_open==True): #To stop some other activity whose timer is running
+							pause = time()
+							start = float(instance.start_time)
+							instance.pause_time = str(pause)
+							total = float(instance.duration) + (pause - start)
+							instance.duration = str(total)
+							instance.is_open = False
+							instance.save()
+			if (exist == False): #Start new timer if it doesn't exist before
+				instance = Activity.objects.create(start_time=str(time()), is_open=True, activity_type=activity_type, project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username)
+				activity_status = str(True)
+				duration = str(instance.duration)
+				instance.save()
+				error = 'Start: Timer started'
+	elif ('pause' in request.POST):
+		try:
+			instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type=activity_type)
+			if (instance.is_open == True):
+				pause = time()
+				start = float(instance.start_time)
+				instance.pause_time = str(pause)
+				total = float(instance.duration) + (pause - start)
+				instance.duration = str(total)
+				instance.is_open = False
+				instance.save()
+				error = 'Timer paused'
+				activity_status = str(False)
+				duration = str(instance.duration)
+			else:
+				error = 'Pause: Timer has not been started'
+		except Activity.DoesNotExist:
+			error = 'Pause: Timer has not been started'
+		except Activity.MultipleObjectsReturned:
+			error = 'Pause: Multiple timers for this user in this activity'
+	elif ('stop' in request.POST):
+		try:
+			instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type=activity_type)
+			if (instance.is_open == True):
+				pause = time()
+				start = float(instance.start_time)
+				instance.pause_time = str(pause)
+				total = float(instance.duration) + (pause - start)
+				instance.duration = str(total)
+				instance.is_open = False
+				instance.save()
+				error = 'Timer stopped'
+				activity_status = str(False)
+				duration = str(instance.duration)
+			else:
+				error = 'Stop: Timer has not been started'
+			return render(request, "defectsForm.html", context)
+		except Activity.DoesNotExist:
+			error = 'Stop: Timer has not been started'
+	elif ('submit_metrics' in request.POST):
+		defect_type = request.POST['defect_type']
+		injected_phase = request.POST['injected_phase']
+		injected_iteration = request.POST['injected_iteration']
+		defect_description = request.POST['defect_description']
+		instance = Defect.objects.create(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, defect_description=defect_description, defect_type=defect_type, injected_phase=injected_phase, injected_iteration=injected_iteration)
+		instance.save()
+
+	context = {
+		"project_name": project_name,
+		"phase_name": phase_name,
+		"iteration_name": iteration_name,
+		"username": username,
+		"activity_type": activity_type,
+		"activity_status": activity_status,
+		"error": error,
+		"duration": duration,
+	}
+
+	return render(request, "defectsActivity.html", context)
 
 def managementActivity(request):
 	b = True

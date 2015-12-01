@@ -1,0 +1,11 @@
+<center>
+<h1>{{project_name}} - {{phase_name}} - {{iteration_name}} - {{activity_type}}</h1>
+
+<form method="POST" action='.'>{% csrf_token %}
+	Defect Type: <input type="text" name="defect_type"><br><br>
+	Injection Phase: <input type="text" name="injected_phase"><br><br>
+	Injection Iteration: <input type="text" name="injected_iteration"><br><br>
+	Description: <input type="text" name="defect_description"><br><br>
+	<input type="submit" value="submit" name="submit_metrics"><br><br>
+</form>
+</center>

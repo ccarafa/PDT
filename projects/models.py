@@ -53,12 +53,15 @@ class Activity(models.Model):
     def __str__(self):
         return str(self.project_name+"_"+self.phase_name+"_"+self.iteration_name+"_"+self.username+"_"+self.activity_type)
 
-class DefectsList(models.Model):
+class Defect(models.Model):
 	defect_description = models.CharField(default="-", max_length=500)
 	defect_type = models.CharField(default="-", max_length=100)
 	project_name = models.CharField(default="-", max_length=75)
 	phase_name = models.CharField(default="-", max_length=75)
 	iteration_name = models.CharField(default="-", max_length=25)
 	username = models.CharField(default='-', max_length=128)
+	injected_phase = models.CharField(default='-', max_length=128)
+	injected_iteration = models.CharField(default='-', max_length=128)
+	
 	def __str__(self):
 		return self.project_name+"_"+self.username
