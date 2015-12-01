@@ -85,7 +85,6 @@ def loggedin(request):#this displays admin form and handles saving the form i.e.
 	args['reg_form']=RegistrationForm()#no post in arg, bog standard
 	return render_to_response('admin.html',args)
 
-
 def logout(request):
 	auth.logout(request)
 	title = "Logged out."
@@ -421,179 +420,6 @@ def activityDashboard(request):
 	}
 	return render(request, "ActivityDashboard.html", context)
 
-def activity(request):
-	project_name = request.session['project_name']
-	phase_name = request.session['phase_name']
-	iteration_name = request.session['iteration_name']
-	username = request.session['username']
-	activity_type = request.session['activity_type']
-	activity_status = 'N/A'
-	sloc = 'N/A'
-	defects = 'N/A'
-	duration = 'N/A'
-	error = 'No error'
-		
-	try:
-		instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type=activity_type)
-		activity_status = str(instance.is_open)
-		sloc = str(instance.sloc)
-		defects = str(instance.defects)
-		duration = str(instance.duration)
-
-	except Activity.DoesNotExist:
-		error = 'No error'
-
-	context = {
-		"project_name": project_name,
-		"phase_name": phase_name,
-		"iteration_name": iteration_name,
-		"username": username,
-		"activity_type": activity_type,
-		"activity_status": activity_status,
-		"sloc": sloc,
-		"defects": defects,
-		"error": error,
-		"duration": duration,
-	}
-	
-	if ('start' in request.POST):
-		canstart = True
-		cproject = Project.objects.get(project_name = project_name)
-		cphase = Phase.objects.get(phase_name = phase_name, project_name = project_name)
-		citeration = Iteration.objects.get(iteration_name = iteration_name, phase_name = phase_name, project_name = project_name)
-		if (cproject.is_open == False):
-			error = 'Project is closed'
-			canstart = False
-		if (cphase.is_open == False):
-			error = 'Phase is closed'
-			canstart = False
-		if (citeration.is_open == False):
-			error = 'Iteration is closed'
-			canstart = False
-
-		if (canstart):
-			exist = False
-			for instance in Activity.objects.all():
-				if (instance.project_name==project_name and instance.phase_name==phase_name and instance.iteration_name==iteration_name and username==username):
-					if (instance.activity_type==activity_type):
-						exist = True
-						if (instance.is_open == False):
-							instance.start_time = str(time())
-							instance.is_open = True
-							activity_status = str(True)
-							sloc = str(instance.sloc)
-							defects = str(instance.defects)
-							duration = str(instance.duration)
-							instance.save()
-							error = 'Start: Timer started'
-						else:
-							error = 'Start: Timer is already running'
-					else:
-						if (instance.is_open==True):
-							pause = time()
-							start = float(instance.start_time)
-							instance.pause_time = str(pause)
-							total = float(instance.duration) + (pause - start)
-							instance.duration = str(total)
-							instance.is_open = False
-							instance.save()
-			if (exist == False):
-				instance = Activity.objects.create(start_time=str(time()), is_open=True, activity_type=activity_type, project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username)
-				activity_status = str(True)
-				sloc = str(instance.sloc)
-				defects = str(instance.defects)
-				duration = str(instance.duration)
-				instance.save()
-				error = 'Start: Timer started'
-
-	elif ('pause' in request.POST):
-		# error = 'Not found'
-		try:
-			instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type=activity_type)
-			if (instance.is_open == True):
-				pause = time()
-				start = float(instance.start_time)
-				instance.pause_time = str(pause)
-				total = float(instance.duration) + (pause - start)
-				instance.duration = str(total)
-				instance.is_open = False
-				instance.save()
-				error = 'Timer paused'
-				activity_status = str(False)
-				sloc = str(instance.sloc)
-				defects = str(instance.defects)
-				duration = str(instance.duration)
-			else:
-				error = 'Pause: Timer has not been started'
-		except Activity.DoesNotExist:
-			error = 'Pause: Timer has not been started'
-		except Activity.MultipleObjectsReturned:
-			error = 'Pause: Multiple timers for this user in this activity'
-
-	elif ('stop' in request.POST):
-		try:
-			instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type=activity_type)
-			return render(request, "ActivityForm.html", context)
-		except Activity.DoesNotExist:
-			error = 'Stop: Timer has not been started'
-	elif ('edit' in request.POST):
-		try:
-			instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type=activity_type)
-			return render(request, "ActivityEdit.html", context)
-		except Activity.DoesNotExist:
-			error = 'Edit: Timer has not been started'
-	elif ('submit_metrics' in request.POST):
-		instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type=activity_type)
-		lines = float(request.POST['sloc'])
-		defect = int(float(request.POST['defects']))
-		instance.sloc += lines
-		instance.defects += defect
-		if (instance.is_open == True):
-			pause = time()
-			start = float(instance.start_time)
-			instance.pause_time = str(pause)
-			total = float(instance.duration) + (pause - start)
-			instance.duration = str(total)
-			instance.is_open = False
-			instance.save()
-			activity_status = str(False)
-			sloc = str(instance.sloc)
-			defects = str(instance.defects)
-			duration = str(instance.duration)
-		else:
-			instance.save()
-			activity_status = str(False)
-			sloc = str(instance.sloc)
-			defects = str(instance.defects)
-			duration = str(instance.duration)
-	elif ('edit_metrics' in request.POST):
-		instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type=activity_type)
-		lines = float(request.POST['sloc'])
-		defect = int(float(request.POST['defects']))
-		dur = str(request.POST['duration'])
-		instance.sloc = lines
-		instance.defects = defect
-		instance.duration = dur
-		instance.save()
-		sloc = str(instance.sloc)
-		defects = str(instance.defects)
-		duration = str(instance.duration)
-
-
-	context = {
-		"project_name": project_name,
-		"phase_name": phase_name,
-		"iteration_name": iteration_name,
-		"username": username,
-		"activity_type": activity_type,
-		"activity_status": activity_status,
-		"sloc": sloc,
-		"defects": defects,
-		"error": error,
-		"duration": duration,
-	}
-	return render(request, "Activity.html", context)
-
 def developmentActivity(request):
 	project_name = request.session['project_name']
 	phase_name = request.session['phase_name']
@@ -864,7 +690,10 @@ def defectsActivity(request):
 		injected_phase = request.POST['injected_phase']
 		injected_iteration = request.POST['injected_iteration']
 		defect_description = request.POST['defect_description']
-		instance = Defect.objects.create(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, defect_description=defect_description, defect_type=defect_type, injected_phase=injected_phase, injected_iteration=injected_iteration)
+		defect_id = Defect.objects.all().count()+1
+		print ("Injected Phase: " + injected_phase)
+		print ("Injected Iteration: " + injected_iteration)
+		instance = Defect.objects.create(defect_id=defect_id, project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, defect_description=defect_description, defect_type=defect_type, injected_phase=injected_phase, injected_iteration=injected_iteration)
 		instance.save()
 
 	context = {
@@ -881,7 +710,177 @@ def defectsActivity(request):
 	return render(request, "defectsActivity.html", context)
 
 def managementActivity(request):
-	b = True
+	project_name = request.session['project_name']
+	phase_name = request.session['phase_name']
+	iteration_name = request.session['iteration_name']
+	username = request.session['username']
+	activity_type = "Management"
+	activity_status = 'N/A'
+	error = 'No error'
+	defects = Defect.objects.filter(project_name=project_name, username=username)
+		
+	try:
+		instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type=activity_type)
+		activity_status = str(instance.is_open)
+		duration = str(instance.duration)
+
+	except Activity.DoesNotExist:
+		error = 'No error'
+
+	context = {
+		"project_name": project_name,
+		"phase_name": phase_name,
+		"iteration_name": iteration_name,
+		"username": username,
+		"activity_type": activity_type,
+		"activity_status": activity_status,
+		"error": error,
+		"duration": duration,
+		"defects": defects,
+	}
+
+	if ('start' in request.POST):
+		canstart = True
+		cproject = Project.objects.get(project_name = project_name)
+		cphase = Phase.objects.get(phase_name = phase_name, project_name = project_name)
+		citeration = Iteration.objects.get(iteration_name = iteration_name, phase_name = phase_name, project_name = project_name)
+		if (cproject.is_open == False):
+			error = 'Project is closed'
+			canstart = False
+		if (cphase.is_open == False):
+			error = 'Phase is closed'
+			canstart = False
+		if (citeration.is_open == False):
+			error = 'Iteration is closed'
+			canstart = False
+		
+		if (canstart):
+			exist = False
+			for instance in Activity.objects.all():
+				if (instance.project_name==project_name and instance.phase_name==phase_name and instance.iteration_name==iteration_name and username==username):
+					if (instance.activity_type==activity_type):
+						exist = True
+						print (str(instance.is_open))
+						if (instance.is_open == False):
+							instance.start_time = str(time())
+							instance.is_open = True
+							activity_status = str(True)
+							duration = str(instance.duration)
+							instance.save()
+							error = 'Start: Timer started'
+						else:
+							error = 'Start: Timer is already running'
+					else:
+						if (instance.is_open==True): #To stop some other activity whose timer is running
+							pause = time()
+							start = float(instance.start_time)
+							instance.pause_time = str(pause)
+							total = float(instance.duration) + (pause - start)
+							instance.duration = str(total)
+							instance.is_open = False
+							instance.save()
+			if (exist == False): #Start new timer if it doesn't exist before
+				instance = Activity.objects.create(start_time=str(time()), is_open=True, activity_type=activity_type, project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username)
+				activity_status = str(True)
+				duration = str(instance.duration)
+				instance.save()
+				error = 'Start: Timer started'
+
+	elif ('stop' in request.POST):
+		try:
+			instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type=activity_type)
+			if (instance.is_open == True):
+				pause = time()
+				start = float(instance.start_time)
+				instance.pause_time = str(pause)
+				total = float(instance.duration) + (pause - start)
+				instance.duration = str(total)
+				instance.is_open = False
+				instance.save()
+				error = 'Timer paused'
+				activity_status = str(False)
+				duration = str(instance.duration)
+			else:
+				error = 'Stop: Timer has not been started'
+		except Activity.DoesNotExist:
+			error = 'Stop: Timer has not been started'
+		except Activity.MultipleObjectsReturned:
+			error = 'Stop: Multiple timers for this user in this activity'
+
+	elif ('edit_development' in request.POST):
+		try:
+			minstance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type="Management")
+			if (minstance.is_open==False):
+				error = 'Management activity timer isn\'t running'
+			else:
+				try:
+					instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type="Development")
+					sloc =  instance.sloc
+					devDuration = instance.duration
+					context = {
+						"project_name": project_name,
+						"phase_name": phase_name,
+						"iteration_name": iteration_name,
+						"username": username,
+						"sloc": sloc,
+						"devDuration": devDuration,
+					}
+					return (request, "developmentEdit.html", context)
+				except Activity.DoesNotExist:
+					error = 'Development Activity doesn\'t exist'
+		except Activity.DoesNotExist:
+			error = 'Management activity timer isn\'t running'
+
+	elif ('edit_defects' in request.POST):
+		try:
+			minstance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type="Management")
+			if (minstance.is_open==False):
+				error = 'Management activity timer isn\'t running'
+			else:
+				try:
+					instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type="Defect Removal")
+					sloc =  instance.sloc
+					defDuration = instance.duration
+					context = {
+						"project_name": project_name,
+						"phase_name": phase_name,
+						"iteration_name": iteration_name,
+						"username": username,
+						"defDuration": defDuration,
+					}
+					return (request, "defectsEdit.html", context)
+				except Activity.DoesNotExist:
+					error = 'Defect Removal Activity doesn\'t exist'
+		except Activity.DoesNotExist:
+			error = 'Management activity timer isn\'t running'
+
+	elif ('submit_development' in request.POST):
+		dev_duration = request.POST['dev_duration']
+		dev_sloc = request.POST['dev_sloc']
+		instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type="Development")
+		instance.duration = dev_duration
+		instance.sloc = dev_sloc		
+		instance.save()
+
+	elif ('submit_defects' in request.POST):
+		def_duration = request.POST['def_duration']
+		instance = Activity.objects.get(project_name=project_name, phase_name=phase_name, iteration_name=iteration_name, username=username, activity_type="Defect Removal")
+		instance.duration = def_duration
+		instance.save()
+
+	context = {
+		"project_name": project_name,
+		"phase_name": phase_name,
+		"iteration_name": iteration_name,
+		"username": username,
+		"activity_type": activity_type,
+		"activity_status": activity_status,
+		"error": error,
+		"duration": duration,
+		"defects": defects,
+	}
+
+	return render(request, "managementActivity.html", context)
 
 def projectviewmetrics(request):
 	project_name = request.session['project_name']

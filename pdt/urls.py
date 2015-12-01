@@ -41,7 +41,6 @@ urlpatterns = [
 	url(r'^calculatemetrics/$', 'login.views.iterationviewmetrics', name='iterationviewmetrics'),
     url(r'^projectpage/projectbuttons/phase/iteration/$', 'login.views.iteration', name='iteration'),
     url(r'^activities/$', 'login.views.activityDashboard', name="activityDashboard"),
-    url(r'^activities/activity/$', 'login.views.activity', name="activity"),
     url(r'^activities/development/$', 'login.views.developmentActivity', name="developmentActivity"),
     url(r'^activities/defect_removal/$', 'login.views.defectsActivity', name="defectsActivity"),
     url(r'^activities/management/$', 'login.views.managementActivity', name="managementActivity"),

@@ -62,6 +62,7 @@ class Defect(models.Model):
 	username = models.CharField(default='-', max_length=128)
 	injected_phase = models.CharField(default='-', max_length=128)
 	injected_iteration = models.CharField(default='-', max_length=128)
+	defect_id = models.IntegerField(default=0)
 	
 	def __str__(self):
-		return self.project_name+"_"+self.username
+		return str(self.defect_id)+"_"+self.project_name+"_"+self.injected_phase+"_"+self.injected_iteration+"_"+self.username

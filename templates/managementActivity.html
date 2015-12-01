@@ -1,12 +1,38 @@
 <center>
 <h1>Management Activity</h1>
-<br><br>
+
 <form method="POST" action=".">{% csrf_token %}
-	<input type="sumbit" value="Start Timer" name="start"> <br><br>
-	<input type="submit" value="Pause Timer" name="pause"> <br><br>
-	<input type="submit" value="Stop Timer" name="stop"> <br><br>
+	<input type="submit" value="Start Timer" name="start"> <br><br>
+	<input type="submit" value="Stop Timer" name="stop"> <br>
 </form>
 
-<!-- Display development and defect removal activities here -->
+Activity Status: {{activity_status}}<br><br>
+Duration (s): {{duration}}<br><br>
+{{error}}<br>
+
+<h3>Edit Activities</h3>
+
+<form method="POST" action=".">{% csrf_token %}
+	<input type="submit" value="Development Activity" name="edit_development"> <br><br>
+	<input type="submit" value="Defect Removal Activity" name="edit_defects"> 
+</form>
+
+<h3>Defects List</h3>
+<table border="1" style="width:75%">
+	<tr>
+		<td><b>Defect Type</b></td>
+		<td><b>Injection Phase</b>	</td>
+		<td><b>Injection Iteration</b></td>
+		<td><b>Description</b></td>
+	</tr>
+	{% for instance in defects %}
+	<tr>
+		<td>{{ instance.defect_type }}</td>
+		<td>{{ instance.injected_phase }}</td>
+		<td>{{ instance.injected_iteration }}</td>
+		<td>{{ instance.defect_description }}</td>
+	</tr>
+	{% endfor %}
+</table>
 
 </center>
