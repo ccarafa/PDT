@@ -1,0 +1,26 @@
+<center>
+<h1>{{project_name}} - {{phase_name}} - {{iteration_name}} - {{activity_type}}</h1>
+
+<form method="POST" action='.'>{% csrf_token %}
+	Defect Type: <input type="text" name="defect_type"><br><br>
+	Injection Phase: 
+	<select name="injected_phase">
+		<option value="Inception Phase">Inception Phase</option>
+		<option value="Elaboration Phase">Elaboration Phase</option>
+		<option value="Construction Phase">Construction Phase</option>
+		<option value="Transition Phase">Transition Phase</option>
+	</select>
+	<br><br>
+	Injection Iteration: 
+	<select name="injected_iteration">
+		<option value="Iteration 1">Iteration 1</option>
+		<option value="Iteration 2">Iteration 2</option>
+		<option value="Iteration 3">Iteration 3</option>
+	</select>
+	<br><br>
+	<!-- Injection Phase: <input type="text" name="injected_phase"><br><br> -->
+	<!-- Injection Iteration: <input type="text" name="injected_iteration"><br><br> -->
+	Description: <input type="text" name="defect_description"><br><br>
+	<input type="submit" value="Submit" name="submit_metrics"><br><br>
+</form>
+</center>

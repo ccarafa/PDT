@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<form action="/dinceptionopen/" form method="POST">{% csrf_token %}
+        <input name ="iteration_1"type="submit" value="Inception Phase">
+   </form>
+   <form action="/dinception/" form method="POST">{% csrf_token %}
+        <input name ="iteration_1"type="submit" value="Elaboration Phase">
+   </form>
+   <form action="/dinception/" form method="POST">{% csrf_token %}
+        <input name ="iteration_1"type="submit" value="Construction Phase">
+   </form>
+   <form action="/dinceptioniterations/" form method="POST">{% csrf_token %}
+        <input name ="iteration_1"type="submit" value="Transition Phase">
+   </form>
+</html>

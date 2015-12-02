@@ -1,0 +1,12 @@
+<center>
+<h1>Activity dashboard</h1>
+<br><br>
+<form method="POST" action="./{{ activity_id }}">{%csrf_token%}
+	<!-- <input type="submit" value="Development Activity" name="type"> <br><br>
+	<input type="submit" value="Defects Removal Activity" name="type"> <br><br>
+	<input type="submit" value="Management Activity" name="type"> <br><br> -->
+	<button type="submit" value="development" name="development">Development Activity</button><br><br>
+	<button type="submit" value="defects" name="defects">Defects Removal Activity</button><br><br>
+	<button type="submit" value="management" name="management">Management Activity</button><br><br>
+</form>
+</center>

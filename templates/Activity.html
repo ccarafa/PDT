@@ -1,0 +1,16 @@
+<center>
+<h1>{{activity_type}} Activity</h1>
+<br><br>
+<form method="POST" action=".">{% csrf_token %}
+	<input type="submit" value="Start Timer" name="start"> <br><br>
+	<input type="submit" value="Pause Timer" name="pause"> <br><br>
+	<input type="submit" value="Stop Timer" name="stop"> <br><br>
+	<input type="submit" value="Edit Metrics" name="edit"> <br><br>
+</form>
+
+Activity Status: {{activity_status}}<br><br>
+Duration (s): {{duration}}<br><br>
+Source Lines of Code: {{sloc}}<br><br>
+Defects Injected/Removed: {{defects}}<br><br>
+{{error}}
+</center>

@@ -1,0 +1,29 @@
+<center>
+	<h1>{{project_name}}</h1>
+	<form method="POST" action="projectbuttons\">{% csrf_token %}
+	{% ifequal state open %}
+	<input type="submit" name="open" value="Open Project" disabled="True"><br><br>
+	<input type="submit" name="close" value="Close Project"><br><br>
+	<input type="submit" name="add_developers" value="Add developers"><br><br>
+	<input type="submit" name="phases" value="View Phases"><br><br>
+	<input type="submit" name="metrics" value="View Metrics" disabled="True"><br><br>
+	{% endifequal %}
+	{% ifequal state close %}
+	<input type="submit" name="open" value="Open Project" disabled="True"><br><br>
+	<input type="submit" name="close" value="Close Project" disabled="True"><br><br>
+	<input type="submit" name="add_developers" value="Add developers" disabled="True"><br><br>
+	<input type="submit" name="phases" value="View Phases"><br><br>
+	<input type="submit" name="metrics" value="View Metrics"><br><br>
+	{% endifequal %}
+	{% ifequal state started %}
+	<input type="submit" name="open" value="Open Project"><br><br>
+	<input type="submit" name="close" value="Close Project" disabled="True"><br><br>
+	<input type="submit" name="add_developers" value="Add developers"><br><br>
+	<input type="submit" name="phases" value="View Phases"><br><br>
+	<input type="submit" name="metrics" value="View Metrics" disabled="True"><br><br>
+	{% endifequal %}
+</form>
+</center>
+<form method="POST" action="/manager/">{% csrf_token %}
+	<input type="submit" name="back" value="Back">
+</form>

@@ -1,0 +1,23 @@
+<h1>{{project_name}}</h1>
+<h1>{{phase_name}}</h1>
+<h1>{{iteration_name}}</h1>
+<form method="POST" action=".">{% csrf_token %}
+	{% ifequal state open %}
+	<input type="submit" name="open" value="Open Iteration" disabled="True"><br><br>
+	<input type="submit" name="close" value="Close Iteration"><br><br>
+	<input type="submit" name="metrics" value="View Metrics" disabled="True"><br><br>
+	{% endifequal %}
+	{% ifequal state close %}
+	<input type="submit" name="open" value="Open Iteration" disabled="True"><br><br>
+	<input type="submit" name="close" value="Close Iteration" disabled="True"><br><br>
+	<input type="submit" name="metrics" value="View Metrics"><br><br>
+	{% endifequal %}
+	{% ifequal state started %}
+	<input type="submit" name="open" value="Open Iteration"><br><br>
+	<input type="submit" name="close" value="Close Iteration" disabled="True"><br><br>
+	<input type="submit" name="metrics" value="View Metrics" disabled="True"><br><br>
+	{% endifequal %}
+</form>
+<form method="POST" action="/projectpage/projectbuttons/phase/">{% csrf_token %}
+    <input type="submit" name="back" value="Back">
+ </form>

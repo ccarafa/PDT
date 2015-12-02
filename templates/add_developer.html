@@ -1,0 +1,22 @@
+<h1>{{project_name}}</h1>
+<h5>{{state}}</h5>
+<form method="POST" action="\add_developer\">{% csrf_token %}
+	Developer name: <input type="text" name="name">
+	<input type="submit" name="add" value="Add">
+</form>
+<h2>Developer's List</h2>
+    <table border="1" style="width:50%">
+      <tr>
+        <td><b>Username</b></td>
+      </tr>
+        {% for instance in usernames %}
+	        {% ifequal instance.role role%}
+	        <tr>
+	            <td>{{instance.username}}</td>
+	        </tr>
+	        {% endifequal %}
+        {% endfor %}
+    </table>
+<form method="POST" action="/projectpage/">{% csrf_token %}
+	<input type="submit" name="back" value="Back">
+</form>

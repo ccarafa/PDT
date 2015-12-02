@@ -1,0 +1,11 @@
+<center>
+<h1>{{project_name}} - {{phase_name}} - {{iteration_name}} - "Defect Removal Activity"</h1>
+
+<form method="POST" action='.'>{% csrf_token %}
+	Duration (s): <input type="text" name="def_duration"><br><br>
+	<input type="submit" value="submit" name="submit_defects"><br><br>
+</form>
+<br><br>
+Duration (s): {{defDuration}}<br><br>
+
+</center>
